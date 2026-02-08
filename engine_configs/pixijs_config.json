@@ -1,0 +1,80 @@
+{
+  "engine": "PixiJS",
+  "version": "8.8.1",
+  "project_structure": {
+    "source": {
+      "app": {
+        "screens": "Game screens and main views",
+        "popups": "Modal dialogs and overlays",
+        "ui": "Reusable UI components (Button, Label, etc.)",
+        "utils": "App-level utilities"
+      },
+      "engine": {
+        "audio": "Audio plugin and systems",
+        "navigation": "Screen navigation plugin",
+        "resize": "Viewport resize handling",
+        "utils": "Engine utilities"
+      },
+      "main": "Entry point (main.ts)"
+    },
+    "raw-assets": "Source assets (organized by context)",
+    "public": "Static assets, favicon, styles",
+    "scripts": "Build scripts (AssetPack, etc.)"
+  },
+  "required_files": ["package.json", "vite.config.ts", "tsconfig.json"],
+  "tech_stack": {
+    "runtime": "PixiJS v8",
+    "language": "TypeScript",
+    "bundler": "Vite",
+    "audio": "@pixi/sound",
+    "ui": "@pixi/ui",
+    "animation": "motion",
+    "asset_pipeline": "@assetpack/core"
+  },
+  "best_practices": {
+    "naming_conventions": {
+      "components": "PascalCase (MainScreen.ts, Button.ts)",
+      "utilities": "camelCase",
+      "folders": "lowercase"
+    },
+    "architecture": {
+      "plugins": "Use engine plugins for cross-cutting concerns",
+      "containers": "Compose DisplayObjects in Container hierarchy",
+      "events": "Event-driven for loose coupling"
+    },
+    "performance": {
+      "target_fps": 60,
+      "texture_atlases": "Use AssetPack for sprites",
+      "object_pooling": "Pool frequently created objects"
+    }
+  },
+  "agent_specializations": {
+    "mechanics_developer": {
+      "focus": ["TypeScript", "Container hierarchy", "Plugins", "State"],
+      "tools": ["mechanics_developer_pixi.md"]
+    },
+    "game_feel_developer": {
+      "focus": ["motion library", "@pixi/sound", "Tweens", "Particles"],
+      "tools": ["game_feel_developer_pixi.md"]
+    },
+    "technical_artist": {
+      "focus": ["Filters", "Textures", "AssetPack", "WebGL"],
+      "tools": ["technical_artist_pixi.md"]
+    },
+    "ui_ux_agent": {
+      "focus": ["@pixi/ui", "ResizePlugin", "Layout", "Accessibility"],
+      "tools": ["ui_ux_agent_pixi.md"]
+    },
+    "qa_agent": {
+      "focus": ["Cross-browser", "Performance", "Integration"],
+      "tools": ["qa_agent_pixi.md"]
+    }
+  },
+  "platforms": {
+    "Web": {
+      "target": "Modern browsers (Chrome, Firefox, Safari, Edge)",
+      "features": ["Touch input", "Responsive design", "WebGL"],
+      "optimization": ["Asset bundling", "Code splitting", "Texture compression"]
+    }
+  }
+}

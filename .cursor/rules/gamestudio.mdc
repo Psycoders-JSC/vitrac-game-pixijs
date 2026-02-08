@@ -1,0 +1,42 @@
+---
+description: Game Studio Sub-Agents integration for Vitrac
+globs: **/*
+alwaysApply: true
+---
+
+# Game Studio Sub-Agents (Vitrac)
+
+This project uses the [Game Studio Sub-Agents](https://github.com/pamirtuna/gamestudio-subagents) framework. When working on design, implementation, art, QA, or production tasks, consult the relevant agent files in `agents/`.
+
+## Quick Reference
+
+| Task | Primary Agent | PixiJS Variant |
+|------|---------------|----------------|
+| Systems architecture, mechanics | mechanics_developer | mechanics_developer_pixi |
+| Polish, juice, feedback | game_feel_developer | game_feel_developer_pixi |
+| Shaders, VFX, optimization | technical_artist | technical_artist_pixi |
+| UI/UX, interfaces | ui_ux_agent | ui_ux_agent_pixi |
+| QA, testing | qa_agent | qa_agent_pixi |
+| Design, GDD | sr_game_designer, mid_game_designer | — |
+| Art direction | sr_game_artist | — |
+| Market, analytics | market_analyst, data_scientist | — |
+| Production | producer_agent, master_orchestrator | — |
+
+## Engine: PixiJS
+
+- **Stack**: PixiJS v8, TypeScript, Vite, @pixi/sound, @pixi/ui, motion
+- **Config**: `engine_configs/pixijs_config.json`
+- **Project config**: `project-config.json`
+
+When an agent refers to Godot, Unity, or Unreal, substitute:
+- GDScript/C# → TypeScript
+- Scenes/Nodes → Container/DisplayObject hierarchy
+- Signals → EventEmitter or custom events
+- Tween nodes → motion library
+- Control nodes → @pixi/ui components
+
+## Usage
+
+Before specialized work, read the relevant agent(s), e.g.:
+- "Read agents/mechanics_developer_pixi.md and implement [feature]"
+- "Read agents/sr_game_designer.md and agents/mid_game_designer.md, then design [system]"

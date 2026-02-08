@@ -1,0 +1,40 @@
+{
+  "project": {
+    "name": "Vitrac",
+    "concept": "PixiJS-based web game",
+    "genre": "TBD",
+    "platform": "Web",
+    "audience": "Casual",
+    "scope": "Small",
+    "timeline": "Short",
+    "engine": "PixiJS",
+    "version": "0.0.0"
+  },
+  "engine_config": "engine_configs/pixijs_config.json",
+  "team": {
+    "active_agents": [
+      "producer_agent",
+      "market_analyst",
+      "data_scientist",
+      "sr_game_designer",
+      "mid_game_designer",
+      "mechanics_developer",
+      "game_feel_developer",
+      "qa_agent",
+      "sr_game_artist",
+      "technical_artist",
+      "ui_ux_agent"
+    ],
+    "lead_agent": "producer_agent"
+  },
+  "features": {
+    "core": ["Main gameplay loop", "Navigation", "Audio", "Settings"],
+    "secondary": [],
+    "nice_to_have": []
+  },
+  "development_rules": {
+    "coding_standards": ["TypeScript strict", "Clean Code", "DRY", "KISS"],
+    "architecture": ["Plugin-based engine", "Event-driven", "Component composition"],
+    "performance": ["60 FPS target", "Responsive layout"]
+  }
+}
