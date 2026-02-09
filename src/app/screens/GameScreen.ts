@@ -721,6 +721,7 @@ export class GameScreen extends Container {
     this.touchFire = false;
     this.touchLeft = false;
     this.touchRight = false;
+    this.activeTouches.clear();
     if (this.fireButton) {
       this.fireButton.onDown.disconnectAll();
       this.fireButton.onUp.disconnectAll();
@@ -742,11 +743,87 @@ export class GameScreen extends Container {
   private touchRight = false;
   private touchFire = false;
   private lastShootTime = 0;
+  /** Multi-touch: map touch identifier -> zone for simultaneous move + fire */
+  private activeTouches = new Map<number, "fire" | "left" | "right">();
   private boundKeyDown!: (e: KeyboardEvent) => void;
   private boundKeyUp!: (e: KeyboardEvent) => void;
   private boundTouchStart!: (e: TouchEvent) => void;
   private boundTouchMove!: (e: TouchEvent) => void;
   private boundTouchEnd!: (e: TouchEvent) => void;
+
+  /** Resolve zone from canvas coordinates; returns null for tap-to-shoot (upper area) */
+  private getTouchZone(
+    canvasX: number,
+    canvasY: number,
+    w: number,
+    h: number,
+  ): "fire" | "left" | "right" | null {
+    if (canvasY < h * 0.4) return null;
+    const inFireButton =
+      this.fireButton &&
+      (() => {
+        const b = this.fireButton!.getTouchBounds(w, h);
+        return (
+          canvasX >= b.left &&
+          canvasX <= b.right &&
+          canvasY >= b.top &&
+          canvasY <= b.bottom
+        );
+      })();
+    if (inFireButton) return "fire";
+    const inLeftMove =
+      this.moveButtons &&
+      (() => {
+        const b = this.moveButtons!.getLeftTouchBounds(h);
+        return (
+          canvasX >= b.left &&
+          canvasX <= b.right &&
+          canvasY >= b.top &&
+          canvasY <= b.bottom
+        );
+      })();
+    if (inLeftMove) return "left";
+    const inRightMove =
+      this.moveButtons &&
+      (() => {
+        const b = this.moveButtons!.getRightTouchBounds(h);
+        return (
+          canvasX >= b.left &&
+          canvasX <= b.right &&
+          canvasY >= b.top &&
+          canvasY <= b.bottom
+        );
+      })();
+    if (inRightMove) return "right";
+    const centerX = w / 2;
+    return canvasX < centerX ? "left" : "right";
+  }
+
+  /** Update touchLeft/touchRight/touchFire from active touches map */
+  private syncTouchStateFromMap(): void {
+    this.touchFire = false;
+    this.touchLeft = false;
+    this.touchRight = false;
+    for (const zone of this.activeTouches.values()) {
+      if (zone === "fire") this.touchFire = true;
+      if (zone === "left") this.touchLeft = true;
+      if (zone === "right") this.touchRight = true;
+    }
+  }
+
+  /** Convert screen coords to canvas coords */
+  private screenToCanvas(
+    clientX: number,
+    clientY: number,
+  ): { x: number; y: number } {
+    const canvas = engine().canvas;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = this.gameState.screenWidth / rect.width;
+    const scaleY = this.gameState.screenHeight / rect.height;
+    const touchX = clientX - rect.left;
+    const touchY = clientY - rect.top;
+    return { x: touchX * scaleX, y: touchY * scaleY };
+  }
 
   private setupInput(): void {
     this.boundKeyDown = (e: KeyboardEvent) => {
@@ -763,70 +840,26 @@ export class GameScreen extends Container {
         this.gameState.gameState !== "powerUpDrop"
       )
         return;
-      const touch = e.touches[0];
-      const canvas = engine().canvas;
-      const rect = canvas.getBoundingClientRect();
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
-      const scaleX = this.gameState.screenWidth / rect.width;
-      const scaleY = this.gameState.screenHeight / rect.height;
-      const canvasX = touchX * scaleX;
-      const canvasY = touchY * scaleY;
       const w = this.gameState.screenWidth;
       const h = this.gameState.screenHeight;
-      const inFireButton =
-        this.fireButton &&
-        (() => {
-          const b = this.fireButton!.getTouchBounds(w, h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      const inLeftMove =
-        this.moveButtons &&
-        (() => {
-          const b = this.moveButtons!.getLeftTouchBounds(h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      const inRightMove =
-        this.moveButtons &&
-        (() => {
-          const b = this.moveButtons!.getRightTouchBounds(h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      if (inFireButton) {
-        this.touchFire = true;
-      } else if (inLeftMove) {
-        this.touchLeft = true;
-      } else if (inRightMove) {
-        this.touchRight = true;
-      } else if (canvasY < h * 0.4) {
-        const now = Date.now();
-        if (now - this.lastShootTime > this.shootCooldown) {
-          this.doShoot();
-          this.lastShootTime = now;
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        const touch = e.changedTouches[i];
+        const { x: canvasX, y: canvasY } = this.screenToCanvas(
+          touch.clientX,
+          touch.clientY,
+        );
+        const zone = this.getTouchZone(canvasX, canvasY, w, h);
+        if (zone === null) {
+          const now = Date.now();
+          if (now - this.lastShootTime > this.shootCooldown) {
+            this.doShoot();
+            this.lastShootTime = now;
+          }
+          continue;
         }
-      } else {
-        const centerX = w / 2;
-        this.touchLeft = canvasX < centerX;
-        this.touchRight = canvasX >= centerX;
+        this.activeTouches.set(touch.identifier, zone);
       }
+      this.syncTouchStateFromMap();
     };
     this.boundTouchMove = (e: TouchEvent) => {
       e.preventDefault();
@@ -835,72 +868,27 @@ export class GameScreen extends Container {
         this.gameState.gameState !== "powerUpDrop"
       )
         return;
-      const touch = e.touches[0];
-      const canvas = engine().canvas;
-      const rect = canvas.getBoundingClientRect();
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
-      const scaleX = this.gameState.screenWidth / rect.width;
-      const scaleY = this.gameState.screenHeight / rect.height;
-      const canvasX = touchX * scaleX;
-      const canvasY = touchY * scaleY;
       const w = this.gameState.screenWidth;
       const h = this.gameState.screenHeight;
-      const inFireButton =
-        this.fireButton &&
-        (() => {
-          const b = this.fireButton!.getTouchBounds(w, h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      const inLeftMove =
-        this.moveButtons &&
-        (() => {
-          const b = this.moveButtons!.getLeftTouchBounds(h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      const inRightMove =
-        this.moveButtons &&
-        (() => {
-          const b = this.moveButtons!.getRightTouchBounds(h);
-          return (
-            canvasX >= b.left &&
-            canvasX <= b.right &&
-            canvasY >= b.top &&
-            canvasY <= b.bottom
-          );
-        })();
-
-      if (!inFireButton) {
-        if (inLeftMove) {
-          this.touchLeft = true;
-          this.touchRight = false;
-        } else if (inRightMove) {
-          this.touchLeft = false;
-          this.touchRight = true;
-        } else {
-          const centerX = w / 2;
-          this.touchLeft = canvasX < centerX;
-          this.touchRight = canvasX >= centerX;
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const { x: canvasX, y: canvasY } = this.screenToCanvas(
+          touch.clientX,
+          touch.clientY,
+        );
+        const zone = this.getTouchZone(canvasX, canvasY, w, h);
+        if (zone !== null) {
+          this.activeTouches.set(touch.identifier, zone);
         }
       }
+      this.syncTouchStateFromMap();
     };
     this.boundTouchEnd = (e: TouchEvent) => {
       e.preventDefault();
-      this.touchLeft = false;
-      this.touchRight = false;
-      this.touchFire = false;
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        this.activeTouches.delete(e.changedTouches[i].identifier);
+      }
+      this.syncTouchStateFromMap();
     };
 
     document.addEventListener("keydown", this.boundKeyDown);
