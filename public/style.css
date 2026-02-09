@@ -335,3 +335,130 @@ body.leaderboard-page-visible #pixi-container {
 .hidden {
     display: none !important;
 }
+
+/* ========== Desktop view: Vitrac side panels ========== */
+@media (min-width: 1024px) {
+    #game-layout {
+        flex-direction: row;
+    }
+
+    #product-panel {
+        width: 200px;
+        min-width: 200px;
+        flex-direction: column;
+        border-bottom: none;
+        border-right: 2px solid #00ffff;
+        padding: 16px 12px;
+        display: flex;
+        gap: 12px;
+    }
+
+    #product-panel .panel-title {
+        order: 2;
+        margin-bottom: 0;
+    }
+
+    #product-panel .product-grid {
+        flex-direction: column;
+        order: 3;
+    }
+
+    #product-panel .product-img {
+        width: 48px;
+        height: 48px;
+    }
+
+    /* Vitrac branding in left panel */
+    .vitrac-branding-left {
+        order: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: inherit;
+        transition: opacity 0.2s ease;
+    }
+
+    .vitrac-branding-left:hover {
+        opacity: 0.9;
+    }
+
+    .vitrac-branding-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        text-decoration: none;
+        color: inherit;
+        transition: opacity 0.2s ease;
+    }
+
+    .vitrac-branding-right:hover {
+        opacity: 0.9;
+    }
+
+    .vitrac-logo {
+        height: 42px;
+        width: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3));
+    }
+
+    .vitrac-tagline {
+        color: #00ffff;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    .vitrac-subline {
+        color: rgba(0, 255, 255, 0.8);
+        font-size: 11px;
+        text-align: center;
+        margin: 0;
+    }
+
+    /* Right panel: Vitrac brand */
+    #vitrac-brand-panel {
+        display: flex !important;
+        width: 200px;
+        min-width: 200px;
+        border-left: 2px solid #00ffff;
+        border-top: none;
+        border-bottom: none;
+        padding: 16px 12px;
+        justify-content: flex-start;
+        align-items: center;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    }
+
+    /* Decorative fruit pattern – berry-like shapes (Vitrac jams/preserves) */
+    .vitrac-fruit-pattern {
+        width: 100%;
+        height: 72px;
+        margin-top: 8px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 48'%3E%3Cellipse cx='12' cy='24' rx='8' ry='10' fill='rgba(0,255,255,0.12)'/%3E%3Cellipse cx='36' cy='14' rx='7' ry='9' fill='rgba(0,255,255,0.1)'/%3E%3Cellipse cx='52' cy='34' rx='6' ry='8' fill='rgba(0,255,255,0.08)'/%3E%3Cellipse cx='24' cy='38' rx='5' ry='7' fill='rgba(0,255,255,0.06)'/%3E%3Cellipse cx='48' cy='8' rx='6' ry='8' fill='rgba(0,255,255,0.1)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 64px 48px;
+        opacity: 0.9;
+    }
+
+    .vitrac-fruit-pattern-right {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 48'%3E%3Cellipse cx='52' cy='24' rx='8' ry='10' fill='rgba(0,255,255,0.12)'/%3E%3Cellipse cx='28' cy='14' rx='7' ry='9' fill='rgba(0,255,255,0.1)'/%3E%3Cellipse cx='12' cy='34' rx='6' ry='8' fill='rgba(0,255,255,0.08)'/%3E%3Cellipse cx='40' cy='38' rx='5' ry='7' fill='rgba(0,255,255,0.06)'/%3E%3Cellipse cx='16' cy='8' rx='6' ry='8' fill='rgba(0,255,255,0.1)'/%3E%3C/svg%3E");
+    }
+}
+
+/* Hide Vitrac branding blocks on mobile */
+@media (max-width: 1023px) {
+    .vitrac-branding {
+        display: none !important;
+    }
+
+    #vitrac-brand-panel {
+        display: none !important;
+    }
+}
