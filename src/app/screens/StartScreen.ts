@@ -1,29 +1,26 @@
-import { FancyButton } from "@pixi/ui";
 import { Container, Sprite, Text, Texture } from "pixi.js";
 
 import { engine } from "../getEngine";
-import { Label } from "../ui/Label";
 import { storage } from "../../engine/utils/storage";
 import { GameScreen } from "./GameScreen";
 
 const PLAYER_NAME_KEY = "jamInvaderPlayerName";
 
-/** Start screen: player name, Asmaa avatar, Jam Invader title, Play button */
+/** Start screen: player name input, Asmaa background, Jam Invader title */
 export class StartScreen extends Container {
   public static assetBundles = ["game", "main"];
 
-  private playButton: FancyButton;
-  private avatarSprite: Sprite;
+  private backgroundSprite: Sprite;
   private titleText: Text;
 
   constructor() {
     super();
 
-    this.avatarSprite = new Sprite({
+    this.backgroundSprite = new Sprite({
       texture: Texture.from("game/Asmaa.png"),
       anchor: 0.5,
     });
-    this.addChild(this.avatarSprite);
+    this.addChild(this.backgroundSprite);
 
     this.titleText = new Text({
       text: "Jam Invader",
@@ -33,44 +30,9 @@ export class StartScreen extends Container {
         fontWeight: "bold",
         align: "center",
       },
-      anchor: { x: 0.5, y: 0.5 },
+      anchor: { x: 0.5, y: -5.5 },
     });
     this.addChild(this.titleText);
-
-    this.playButton = new FancyButton({
-      defaultView: "button.png",
-      nineSliceSprite: [38, 50, 38, 50],
-      anchor: 0.5,
-      text: new Label({
-        text: "Play",
-        style: {
-          fill: 0x00ffff,
-          align: "center",
-          fontSize: 28,
-        },
-      }),
-      textOffset: { x: 0, y: -13 },
-      defaultTextAnchor: 0.5,
-      scale: 0.9,
-      animations: {
-        hover: {
-          props: { scale: { x: 1.03, y: 1.03 } },
-          duration: 100,
-        },
-        pressed: {
-          props: { scale: { x: 0.97, y: 0.97 } },
-          duration: 100,
-        },
-      },
-    });
-    this.playButton.onPress.connect(this.handlePlay.bind(this));
-    this.playButton.onHover.connect(() =>
-      engine().audio.sfx.play("main/sounds/sfx-hover.wav"),
-    );
-    this.playButton.onDown.connect(() =>
-      engine().audio.sfx.play("main/sounds/sfx-press.wav"),
-    );
-    this.addChild(this.playButton);
   }
 
   private handlePlay() {
@@ -106,15 +68,21 @@ export class StartScreen extends Container {
     const centerX = width * 0.5;
     const centerY = height * 0.5;
 
-    const scale = Math.min(width / 360, height / 480);
-    this.avatarSprite.position.set(centerX, centerY - 100);
-    this.avatarSprite.scale.set(scale);
+    // Scale background to cover viewport without stretching (maintain aspect ratio)
+    const tex = this.backgroundSprite.texture;
+    const texW = tex?.width ?? 1;
+    const texH = tex?.height ?? 1;
+    const scaleX = width / texW;
+    const scaleY = height / texH;
+    const coverScale = Math.max(scaleX, scaleY);
+    this.backgroundSprite.position.set(centerX, centerY);
+    this.backgroundSprite.scale.set(coverScale);
 
     this.titleText.position.set(centerX, centerY - 30);
-    (this.titleText.style as { fontSize?: number }).fontSize = Math.max(28, Math.min(48, width * 0.12));
-
-    this.playButton.position.set(centerX, centerY + 60);
-    this.playButton.scale.set(Math.min(1, width / 360));
+    (this.titleText.style as { fontSize?: number }).fontSize = Math.max(
+      28,
+      Math.min(48, width * 0.12),
+    );
   }
 
   public async show() {
