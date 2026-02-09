@@ -5,6 +5,7 @@ export const SPRITE_CONFIG = {
   enemy: { targetWidth: 36, maxTextureWidth: 440 },
   bullet: { targetWidth: 12, textureWidth: 16 },
   seed: { targetRadius: 6, baseRadius: 3 },
+  powerUp: { targetWidth: 40, textureWidth: 256 },
 } as const;
 
 export function getPlayerScale(screenWidth: number): number {
@@ -25,4 +26,9 @@ export function getBulletScale(screenWidth: number): number {
 export function getSeedScale(screenWidth: number): number {
   const base = screenWidth / 360;
   return base * (SPRITE_CONFIG.seed.targetRadius / SPRITE_CONFIG.seed.baseRadius);
+}
+
+export function getPowerUpScale(screenWidth: number): number {
+  const base = screenWidth / 360;
+  return base * (SPRITE_CONFIG.powerUp.targetWidth / SPRITE_CONFIG.powerUp.textureWidth);
 }

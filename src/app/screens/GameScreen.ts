@@ -1,4 +1,3 @@
-import { animate } from "motion";
 import type { Ticker } from "pixi.js";
 import { Container, Sprite, Text, Texture } from "pixi.js";
 
@@ -12,11 +11,13 @@ import {
 } from "../game/Enemy";
 import { GameState } from "../game/GameState";
 import { Particle } from "../game/Particle";
+import { PowerUp, type PowerUpType } from "../game/PowerUp";
 import { Player } from "../game/Player";
 import { Seed } from "../game/Seed";
 import {
   getBulletScale,
   getEnemyScale,
+  getPowerUpScale,
   getSeedScale,
   SPRITE_CONFIG,
 } from "../game/spriteScale";
@@ -34,13 +35,15 @@ export class GameScreen extends Container {
   private seeds: Seed[] = [];
   private enemies: Enemy[] = [];
   private particles: Particle[] = [];
+  private powerUp: PowerUp | null = null;
   private scoreText!: Text;
   private livesText!: Text;
   private levelText!: Text;
   private levelCompleteOverlay!: Text;
   private screenShake = 0;
-  private levelCompleteTimer = 0;
   private gameStartFrames = 0;
+  private shootCooldown = 150;
+  private fireColumnCount = 1;
 
   constructor() {
     super();
@@ -70,9 +73,12 @@ export class GameScreen extends Container {
     this.seeds = [];
     this.enemies = [];
     this.particles = [];
+    this.powerUp = null;
+    this.collectedPowerUpName = null;
     this.screenShake = 0;
-    this.levelCompleteTimer = 0;
     this.gameStartFrames = 0;
+    this.shootCooldown = 150;
+    this.fireColumnCount = 1;
 
     const w = this.gameState.screenWidth;
     const h = this.gameState.screenHeight;
@@ -198,14 +204,20 @@ export class GameScreen extends Container {
   private shoot(): void {
     const w = this.gameState.screenWidth;
     const bulletScale = getBulletScale(w);
+    const colOffset = 25 * (w / 360);
+    const centerX = this.player.x;
 
-    const bullet = new Bullet(
-      this.player.x,
-      this.player.y - this.player.height,
-      bulletScale,
-    );
-    this.bullets.push(bullet);
-    this.gameContainer.addChild(bullet);
+    for (let i = 0; i < this.fireColumnCount; i++) {
+      const offset = (i - (this.fireColumnCount - 1) / 2) * colOffset;
+      const x = centerX + offset;
+      const bullet = new Bullet(
+        x,
+        this.player.y - this.player.height,
+        bulletScale,
+      );
+      this.bullets.push(bullet);
+      this.gameContainer.addChild(bullet);
+    }
     this.createExplosion(this.player.x, this.player.y, 0xffff00, 5, 2, 1);
     engine().audio.sfx.play("main/sounds/sfx-press.wav");
   }
@@ -220,6 +232,76 @@ export class GameScreen extends Container {
       r1.y < r2.y + r2.height &&
       r1.y + r1.height > r2.y
     );
+  }
+
+  private static readonly POWER_UP_TYPES: PowerUpType[] = [
+    "fireSpeed",
+    "moveSpeed",
+    "extraColumn",
+  ];
+
+  private static readonly POWER_UP_NAMES: Record<PowerUpType, string> = {
+    fireSpeed: "Fire Speed!",
+    moveSpeed: "Move Speed!",
+    extraColumn: "Extra Column!",
+  };
+
+  private collectedPowerUpName: string | null = null;
+  private collectedPowerUpDisplayUntil = 0;
+
+  private spawnPowerUp(): void {
+    const w = this.gameState.screenWidth;
+    const h = this.gameState.screenHeight;
+    const type =
+      GameScreen.POWER_UP_TYPES[
+        Math.floor(Math.random() * GameScreen.POWER_UP_TYPES.length)
+      ];
+    const scale = getPowerUpScale(w);
+    this.powerUp = new PowerUp(w / 2, h * 0.35, type, scale);
+    this.gameContainer.addChild(this.powerUp);
+  }
+
+  private applyPowerUp(type: PowerUpType): void {
+    switch (type) {
+      case "fireSpeed":
+        this.shootCooldown = Math.max(60, this.shootCooldown - 40);
+        break;
+      case "moveSpeed":
+        this.player.moveSpeedMultiplier = Math.min(2, this.player.moveSpeedMultiplier + 0.2);
+        break;
+      case "extraColumn":
+        this.fireColumnCount++;
+        break;
+    }
+    this.createExplosion(this.player.x, this.player.y, 0x00ff88, 30, 5, 1);
+    engine().audio.sfx.play("main/sounds/sfx-hover.wav");
+  }
+
+  private clearProjectilesAndSeeds(): void {
+    for (const b of this.bullets) {
+      this.gameContainer.removeChild(b);
+    }
+    this.bullets = [];
+    for (const s of this.seeds) {
+      this.gameContainer.removeChild(s);
+    }
+    this.seeds = [];
+  }
+
+  private advanceToNextLevel(): void {
+    this.clearProjectilesAndSeeds();
+    this.gameStartFrames = 0;
+    this.initEnemies();
+    this.levelText.text = `Level: ${this.gameState.level}`;
+    this.createExplosion(
+      this.gameState.screenWidth / 2,
+      this.gameState.screenHeight / 2,
+      0x00ffff,
+      50,
+      15,
+      1,
+    );
+    this.gameState.gameState = "playing";
   }
 
   /** Called when game over - switch to GameOverScreen */
@@ -240,23 +322,43 @@ export class GameScreen extends Container {
     const h = this.gameState.screenHeight;
     const delta = time.deltaMS / 16.67;
 
-    if (this.gameState.gameState === "levelComplete") {
-      this.levelCompleteTimer += delta;
-      if (this.levelCompleteTimer >= 120) {
-        this.gameState.gameState = "playing";
+    if (this.gameState.gameState === "powerUpDrop") {
+      if (this.collectedPowerUpName && Date.now() >= this.collectedPowerUpDisplayUntil) {
+        this.collectedPowerUpName = null;
         this.levelCompleteOverlay.visible = false;
-        // Clear leftover bullets and seeds from previous level
-        for (const b of this.bullets) {
-          this.gameContainer.removeChild(b);
-        }
-        this.bullets = [];
-        for (const s of this.seeds) {
-          this.gameContainer.removeChild(s);
-        }
-        this.seeds = [];
-        this.initEnemies();
-        this.createExplosion(w / 2, h / 2, 0x00ffff, 50, 15, 1);
+        this.advanceToNextLevel();
+        this.particles = this.particles.filter((p) => {
+          p.update();
+          if (p.isDead()) {
+            this.gameContainer.removeChild(p);
+            return false;
+          }
+          return true;
+        });
+        return;
       }
+
+      if (this.powerUp) {
+        if (this.keys["ArrowLeft"] || this.touchLeft) this.moveLeft();
+        if (this.keys["ArrowRight"] || this.touchRight) this.moveRight();
+
+        this.powerUp.update();
+        if (this.powerUp.isOffScreen(h)) {
+          this.powerUp.y = 80 * (w / 360);
+          this.powerUp.x = w / 2;
+        } else if (this.checkCollision(this.powerUp.getRect(), this.player.getRect())) {
+          const type = this.powerUp.type;
+          this.applyPowerUp(type);
+          this.gameContainer.removeChild(this.powerUp);
+          this.powerUp = null;
+          this.collectedPowerUpName = GameScreen.POWER_UP_NAMES[type];
+          this.collectedPowerUpDisplayUntil = Date.now() + 1500;
+          this.levelCompleteOverlay.text = this.collectedPowerUpName;
+          this.levelCompleteOverlay.visible = true;
+          this.levelCompleteOverlay.position.set(w / 2, h / 2);
+        }
+      }
+
       this.particles = this.particles.filter((p) => {
         p.update();
         if (p.isDead()) {
@@ -409,16 +511,9 @@ export class GameScreen extends Container {
     if (this.enemies.length === 0) {
       if (this.gameState.level < this.gameState.maxLevel) {
         this.gameState.level++;
-        this.gameState.gameState = "levelComplete";
-        this.levelCompleteOverlay.text = `Level ${this.gameState.level - 1} Complete!\nStarting Level ${this.gameState.level}...`;
-        this.levelCompleteOverlay.alpha = 0;
-        this.levelCompleteOverlay.visible = true;
-        this.levelCompleteTimer = 0;
-        animate(
-          this.levelCompleteOverlay,
-          { alpha: 1 },
-          { duration: 0.5, ease: "easeOut" },
-        );
+        this.gameState.gameState = "powerUpDrop";
+        this.clearProjectilesAndSeeds();
+        this.spawnPowerUp();
       } else {
         const prevHigh = this.gameState.highScore;
         const wasNew = this.gameState.score > prevHigh;
@@ -489,7 +584,11 @@ export class GameScreen extends Container {
 
   /** Expose movement for input handler */
   public moveLeft(): void {
-    if (this.gameState.gameState === "playing" && this.player) {
+    const canMove =
+      (this.gameState.gameState === "playing" ||
+        this.gameState.gameState === "powerUpDrop") &&
+      this.player;
+    if (canMove) {
       const isFiring = this.keys[" "];
       const speedMultiplier = isFiring ? 1 : 2;
       this.player.moveLeft(this.gameState.screenWidth, speedMultiplier);
@@ -497,7 +596,11 @@ export class GameScreen extends Container {
   }
 
   public moveRight(): void {
-    if (this.gameState.gameState === "playing" && this.player) {
+    const canMove =
+      (this.gameState.gameState === "playing" ||
+        this.gameState.gameState === "powerUpDrop") &&
+      this.player;
+    if (canMove) {
       const isFiring = this.keys[" "];
       const speedMultiplier = isFiring ? 1 : 2;
       this.player.moveRight(this.gameState.screenWidth, speedMultiplier);
@@ -517,7 +620,6 @@ export class GameScreen extends Container {
   private touchLeft = false;
   private touchRight = false;
   private lastShootTime = 0;
-  private readonly shootCooldown = 150;
   private boundKeyDown!: (e: KeyboardEvent) => void;
   private boundKeyUp!: (e: KeyboardEvent) => void;
   private boundTouchStart!: (e: TouchEvent) => void;
@@ -534,7 +636,11 @@ export class GameScreen extends Container {
     };
     this.boundTouchStart = (e: TouchEvent) => {
       e.preventDefault();
-      if (this.gameState.gameState !== "playing") return;
+      if (
+        this.gameState.gameState !== "playing" &&
+        this.gameState.gameState !== "powerUpDrop"
+      )
+        return;
       const touch = e.touches[0];
       const canvas = engine().canvas;
       const rect = canvas.getBoundingClientRect();
@@ -558,7 +664,11 @@ export class GameScreen extends Container {
     };
     this.boundTouchMove = (e: TouchEvent) => {
       e.preventDefault();
-      if (this.gameState.gameState !== "playing") return;
+      if (
+        this.gameState.gameState !== "playing" &&
+        this.gameState.gameState !== "powerUpDrop"
+      )
+        return;
       const touch = e.touches[0];
       const canvas = engine().canvas;
       const rect = canvas.getBoundingClientRect();

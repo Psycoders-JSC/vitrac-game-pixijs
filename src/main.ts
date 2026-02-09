@@ -1,9 +1,10 @@
+import { Assets } from "pixi.js";
+
 import { setEngine } from "./app/getEngine";
 import {
   fetchLeaderboard,
   isLeaderboardAvailable,
 } from "./app/services/leaderboard";
-import { LoadScreen } from "./app/screens/LoadScreen";
 import { StartScreen } from "./app/screens/StartScreen";
 import { userSettings } from "./app/utils/userSettings";
 import { CreationEngine } from "./engine/engine";
@@ -55,9 +56,19 @@ async function renderLeaderboard() {
   // Initialize the user settings
   userSettings.init();
 
-  // Show the load screen
-  await engine.navigation.showScreen(LoadScreen);
-  // Show the start screen
+  // Load assets with progress shown on generic HTML overlay
+  const loadOverlay = document.getElementById("load-overlay");
+  const progressFill = document.getElementById("loadProgressFill");
+  const updateProgress = (pct: number) => {
+    if (progressFill) progressFill.style.width = `${pct}%`;
+  };
+
+  await Assets.loadBundle(["game", "main"], (progress) => {
+    updateProgress(progress * 100);
+  });
+  updateProgress(100);
+
+  loadOverlay?.classList.add("hidden");
   await engine.navigation.showScreen(StartScreen);
   // Fetch and display leaderboard
   await renderLeaderboard();

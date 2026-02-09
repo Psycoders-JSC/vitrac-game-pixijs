@@ -8,6 +8,8 @@ export class Player extends Sprite {
 
   private _speed = 8;
   private _scaleFactor = 1;
+  /** Multiplier from move speed power-up (default 1) */
+  public moveSpeedMultiplier = 1;
 
   constructor(screenWidth: number, screenHeight: number) {
     super({
@@ -38,13 +40,13 @@ export class Player extends Sprite {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public moveLeft(_screenWidth: number, speedMultiplier = 1): void {
     if (this.x > this.width / 2) {
-      this.x -= this._speed * speedMultiplier;
+      this.x -= this._speed * speedMultiplier * this.moveSpeedMultiplier;
     }
   }
 
   public moveRight(screenWidth: number, speedMultiplier = 1): void {
     if (this.x < screenWidth - this.width / 2) {
-      this.x += this._speed * speedMultiplier;
+      this.x += this._speed * speedMultiplier * this.moveSpeedMultiplier;
     }
   }
 
