@@ -163,7 +163,7 @@ export class GameScreen extends Container {
     const startY = 50 * (w / 360);
     const spacingY = enemyHeight + 6 * (w / 360);
 
-    const baseSpeed = 0.5 + (level - 1) * 0.15;
+    const baseSpeed = 0.5 + (level - 1) * 0.25;
     const speed = baseSpeed * enemyScale;
     const shootInterval = Math.max(60, 180 - (level - 1) * 10);
 
@@ -238,12 +238,14 @@ export class GameScreen extends Container {
     "fireSpeed",
     "moveSpeed",
     "extraColumn",
+    "extraLives",
   ];
 
   private static readonly POWER_UP_NAMES: Record<PowerUpType, string> = {
     fireSpeed: "Fire Speed!",
     moveSpeed: "Move Speed!",
     extraColumn: "Extra Column!",
+    extraLives: "+2 Lives!",
   };
 
   private collectedPowerUpName: string | null = null;
@@ -271,6 +273,10 @@ export class GameScreen extends Container {
         break;
       case "extraColumn":
         this.fireColumnCount++;
+        break;
+      case "extraLives":
+        this.gameState.lives += 2;
+        this.livesText.text = `Lives: ${this.gameState.lives}`;
         break;
     }
     this.createExplosion(this.player.x, this.player.y, 0x00ff88, 30, 5, 1);
@@ -341,6 +347,10 @@ export class GameScreen extends Container {
       if (this.powerUp) {
         if (this.keys["ArrowLeft"] || this.touchLeft) this.moveLeft();
         if (this.keys["ArrowRight"] || this.touchRight) this.moveRight();
+        this.player.updateTilt(
+          this.keys["ArrowLeft"] || this.touchLeft,
+          this.keys["ArrowRight"] || this.touchRight,
+        );
 
         this.powerUp.update();
         if (this.powerUp.isOffScreen(h)) {
@@ -372,6 +382,10 @@ export class GameScreen extends Container {
 
     if (this.keys["ArrowLeft"] || this.touchLeft) this.moveLeft();
     if (this.keys["ArrowRight"] || this.touchRight) this.moveRight();
+    this.player.updateTilt(
+      this.keys["ArrowLeft"] || this.touchLeft,
+      this.keys["ArrowRight"] || this.touchRight,
+    );
 
     if (this.keys[" "] && this.gameState.gameState === "playing") {
       const now = Date.now();

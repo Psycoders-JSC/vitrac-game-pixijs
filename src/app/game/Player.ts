@@ -10,6 +10,9 @@ export class Player extends Sprite {
   private _scaleFactor = 1;
   /** Multiplier from move speed power-up (default 1) */
   public moveSpeedMultiplier = 1;
+  private _tiltAngle = 0;
+  private static readonly MAX_TILT = 12;
+  private static readonly TILT_LERP = 0.2;
 
   constructor(screenWidth: number, screenHeight: number) {
     super({
@@ -48,6 +51,15 @@ export class Player extends Sprite {
     if (this.x < screenWidth - this.width / 2) {
       this.x += this._speed * speedMultiplier * this.moveSpeedMultiplier;
     }
+  }
+
+  /** Update sprite tilt based on horizontal movement direction */
+  public updateTilt(movingLeft: boolean, movingRight: boolean): void {
+    let target = 0;
+    if (movingLeft) target = Player.MAX_TILT;
+    else if (movingRight) target = -Player.MAX_TILT;
+    this._tiltAngle += (target - this._tiltAngle) * Player.TILT_LERP;
+    this.angle = this._tiltAngle;
   }
 
   public getRect(): { x: number; y: number; width: number; height: number } {

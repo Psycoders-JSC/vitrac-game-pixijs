@@ -1,12 +1,17 @@
 import { Sprite, Texture } from "pixi.js";
 
 /** Power-up type determines effect and sprite */
-export type PowerUpType = "fireSpeed" | "moveSpeed" | "extraColumn";
+export type PowerUpType =
+  | "fireSpeed"
+  | "moveSpeed"
+  | "extraColumn"
+  | "extraLives";
 
 const POWER_UP_SPRITES: Record<PowerUpType, string> = {
   fireSpeed: "game/products/Raspberry_1.png",
   moveSpeed: "game/products/Mango_1_0.png",
   extraColumn: "game/products/Blueberry_1.png",
+  extraLives: "game/products/Carrot_1.png",
 };
 
 /** Droppable power-up - Vitrac jam product sprite, drifts down for collection */
