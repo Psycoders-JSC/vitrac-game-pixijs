@@ -6,7 +6,12 @@ export function resize(
   letterbox: boolean,
 ) {
   if (w <= 0 || h <= 0) {
-    return { width: minWidth, height: minHeight };
+    return {
+      width: minWidth,
+      height: minHeight,
+      displayWidth: minWidth,
+      displayHeight: minHeight,
+    };
   }
   const aspectRatio = minWidth / minHeight;
   let canvasWidth = w;
@@ -29,5 +34,10 @@ export function resize(
   const width = Math.floor(canvasWidth * scale);
   const height = Math.floor(canvasHeight * scale);
 
-  return { width, height };
+  return {
+    width,
+    height,
+    displayWidth: canvasWidth,
+    displayHeight: canvasHeight,
+  };
 }

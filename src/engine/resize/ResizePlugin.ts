@@ -119,7 +119,7 @@ export class CreationResizePlugin {
         canvasHeight = clientHeight;
       }
 
-      const { width, height } = resize(
+      const { width, height, displayWidth, displayHeight } = resize(
         canvasWidth,
         canvasHeight,
         app.resizeOptions.minWidth,
@@ -127,8 +127,8 @@ export class CreationResizePlugin {
         app.resizeOptions.letterbox,
       );
 
-      app.renderer.canvas.style.width = `${canvasWidth}px`;
-      app.renderer.canvas.style.height = `${canvasHeight}px`;
+      app.renderer.canvas.style.width = `${displayWidth}px`;
+      app.renderer.canvas.style.height = `${displayHeight}px`;
       window.scrollTo(0, 0);
 
       app.renderer.resize(width, height);
