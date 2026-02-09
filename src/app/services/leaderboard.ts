@@ -41,10 +41,11 @@ export async function saveScore(
   if (!client) {
     return false;
   }
-  const payload: { player_name: string; score: number; player_phone?: string } = {
-    player_name: playerName.trim(),
-    score,
-  };
+  const payload: { player_name: string; score: number; player_phone?: string } =
+    {
+      player_name: playerName.trim(),
+      score,
+    };
   const phone = playerPhone?.trim();
   if (phone) payload.player_phone = phone;
   const { error } = await client.from("high_scores").insert(payload);

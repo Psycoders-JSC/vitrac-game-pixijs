@@ -128,7 +128,9 @@ export class StartScreen extends Container {
     const leaderboardBtn = document.getElementById("startLeaderboardButton");
     if (leaderboardBtn && !leaderboardBtn.dataset.wired) {
       leaderboardBtn.dataset.wired = "1";
-      leaderboardBtn.addEventListener("click", () => this.handleLeaderboardClick());
+      leaderboardBtn.addEventListener("click", () =>
+        this.handleLeaderboardClick(),
+      );
     }
 
     const backBtn = document.getElementById("leaderboardBackButton");

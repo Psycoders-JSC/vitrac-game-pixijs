@@ -269,7 +269,10 @@ export class GameScreen extends Container {
         this.shootCooldown = Math.max(60, this.shootCooldown - 40);
         break;
       case "moveSpeed":
-        this.player.moveSpeedMultiplier = Math.min(2, this.player.moveSpeedMultiplier + 0.2);
+        this.player.moveSpeedMultiplier = Math.min(
+          2,
+          this.player.moveSpeedMultiplier + 0.2,
+        );
         break;
       case "extraColumn":
         this.fireColumnCount++;
@@ -329,7 +332,10 @@ export class GameScreen extends Container {
     const delta = time.deltaMS / 16.67;
 
     if (this.gameState.gameState === "powerUpDrop") {
-      if (this.collectedPowerUpName && Date.now() >= this.collectedPowerUpDisplayUntil) {
+      if (
+        this.collectedPowerUpName &&
+        Date.now() >= this.collectedPowerUpDisplayUntil
+      ) {
         this.collectedPowerUpName = null;
         this.levelCompleteOverlay.visible = false;
         this.advanceToNextLevel();
@@ -356,7 +362,9 @@ export class GameScreen extends Container {
         if (this.powerUp.isOffScreen(h)) {
           this.powerUp.y = 80 * (w / 360);
           this.powerUp.x = w / 2;
-        } else if (this.checkCollision(this.powerUp.getRect(), this.player.getRect())) {
+        } else if (
+          this.checkCollision(this.powerUp.getRect(), this.player.getRect())
+        ) {
           const type = this.powerUp.type;
           this.applyPowerUp(type);
           this.gameContainer.removeChild(this.powerUp);

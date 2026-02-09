@@ -4,8 +4,12 @@ export class GameState {
   public lives = 3;
   public level = 1;
   public maxLevel = 10;
-  public gameState: "playing" | "gameover" | "levelComplete" | "powerUpDrop" | "start" =
-    "playing";
+  public gameState:
+    | "playing"
+    | "gameover"
+    | "levelComplete"
+    | "powerUpDrop"
+    | "start" = "playing";
 
   /** Mobile portrait base (9:16) */
   public screenWidth = 360;

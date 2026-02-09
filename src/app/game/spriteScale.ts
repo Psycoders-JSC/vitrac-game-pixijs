@@ -10,25 +10,39 @@ export const SPRITE_CONFIG = {
 
 export function getPlayerScale(screenWidth: number): number {
   const base = screenWidth / 360;
-  return base * (SPRITE_CONFIG.player.targetWidth / SPRITE_CONFIG.player.textureWidth);
+  return (
+    base *
+    (SPRITE_CONFIG.player.targetWidth / SPRITE_CONFIG.player.textureWidth)
+  );
 }
 
 export function getEnemyScale(screenWidth: number): number {
   const base = screenWidth / 360;
-  return base * (SPRITE_CONFIG.enemy.targetWidth / SPRITE_CONFIG.enemy.maxTextureWidth);
+  return (
+    base *
+    (SPRITE_CONFIG.enemy.targetWidth / SPRITE_CONFIG.enemy.maxTextureWidth)
+  );
 }
 
 export function getBulletScale(screenWidth: number): number {
   const base = screenWidth / 360;
-  return base * (SPRITE_CONFIG.bullet.targetWidth / SPRITE_CONFIG.bullet.textureWidth);
+  return (
+    base *
+    (SPRITE_CONFIG.bullet.targetWidth / SPRITE_CONFIG.bullet.textureWidth)
+  );
 }
 
 export function getSeedScale(screenWidth: number): number {
   const base = screenWidth / 360;
-  return base * (SPRITE_CONFIG.seed.targetRadius / SPRITE_CONFIG.seed.baseRadius);
+  return (
+    base * (SPRITE_CONFIG.seed.targetRadius / SPRITE_CONFIG.seed.baseRadius)
+  );
 }
 
 export function getPowerUpScale(screenWidth: number): number {
   const base = screenWidth / 360;
-  return base * (SPRITE_CONFIG.powerUp.targetWidth / SPRITE_CONFIG.powerUp.textureWidth);
+  return (
+    base *
+    (SPRITE_CONFIG.powerUp.targetWidth / SPRITE_CONFIG.powerUp.textureWidth)
+  );
 }
