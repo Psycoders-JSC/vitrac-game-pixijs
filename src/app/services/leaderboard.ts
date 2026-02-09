@@ -19,13 +19,14 @@ export async function fetchLeaderboard(
   const { data, error } = await client
     .from("high_scores")
     .select("player_name, score")
+    .gt("score", 0)
     .order("score", { ascending: false })
     .limit(limit);
   if (error) {
     console.warn("Failed to fetch leaderboard:", error);
     return [];
   }
-  return data ?? [];
+  return (data ?? []).filter((e) => e.score > 0);
 }
 
 export async function saveScore(
@@ -33,6 +34,7 @@ export async function saveScore(
   score: number,
 ): Promise<boolean> {
   if (!playerName?.trim()) return false;
+  if (score <= 0) return false;
   const client = initSupabaseClient();
   if (!client) {
     return false;
