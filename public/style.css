@@ -1,15 +1,247 @@
-body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+body {
     color: rgba(255, 255, 255, 0.87);
-    background-color: #000000;
+    background: linear-gradient(135deg, #0a0a2e 0%, #16213e 100%);
+    font-family: Arial, sans-serif;
+    touch-action: manipulation;
 }
 
 #app {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
+}
+
+/* Mobile-first: vertical stack */
+#game-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 100vw;
+}
+
+#product-panel {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #00ffff;
+    padding: 8px 12px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.panel-title {
+    color: #00ffff;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #00ffff;
+    padding-bottom: 6px;
+}
+
+.panel-title a {
+    color: #00ffff;
+    text-decoration: none;
+}
+
+.product-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
     justify-content: center;
     align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.product-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.product-link {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.product-link:active {
+    transform: scale(0.95);
+    border-color: #00ffff;
+}
+
+.product-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+#game-main {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+#pixi-container {
+    flex: 1;
+    min-width: 0;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* When start overlay is visible, disable canvas so HTML input/button receive touches on mobile */
+body.start-overlay-visible #pixi-container {
+    pointer-events: none;
+}
+
+#leaderboard-panel {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.8);
+    border-top: 2px solid #00ffff;
+    padding: 8px 12px;
+    max-height: 100px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.leaderboard-list {
+    overflow-y: auto;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.9);
+    max-height: 70px;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+    color: rgba(0, 255, 255, 0.7);
+    font-size: 11px;
+}
+
+.leaderboard-entry {
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.coupon-message {
+    text-align: center;
+    color: #00ffff;
+    padding: 8px;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    margin: 6px 0;
+}
+
+.coupon-message h4 {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.coupon-discount {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.score-saved {
+    color: #00ff88;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+.overlay > * {
+    pointer-events: auto;
+}
+
+.overlay input {
+    padding: 10px 14px;
+    font-size: 16px;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #00ffff;
+    width: 100%;
+    max-width: 260px;
+}
+
+.overlay input::placeholder {
+    color: rgba(0, 255, 255, 0.5);
+}
+
+.overlay label {
+    color: #00ffff;
+    font-size: 14px;
+}
+
+.overlay p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    text-align: center;
+}
+
+.overlay .controls-hint {
+    font-size: 11px;
+    color: rgba(0, 255, 255, 0.7);
+    pointer-events: none;
+}
+
+.overlay-play-btn {
+    padding: 12px 28px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ffff;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 48px;
+    min-width: 120px;
+}
+
+.overlay-play-btn:active {
+    transform: scale(0.97);
+}
+
+.hidden {
+    display: none !important;
 }

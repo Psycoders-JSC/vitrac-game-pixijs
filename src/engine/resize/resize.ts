@@ -5,25 +5,21 @@ export function resize(
   minHeight: number,
   letterbox: boolean,
 ) {
+  if (w <= 0 || h <= 0) {
+    return { width: minWidth, height: minHeight };
+  }
   const aspectRatio = minWidth / minHeight;
   let canvasWidth = w;
   let canvasHeight = h;
 
   if (letterbox) {
-    if (minWidth < minHeight) {
-      canvasHeight = window.innerHeight;
-      canvasWidth = Math.min(
-        window.innerWidth,
-        minWidth,
-        canvasHeight * aspectRatio,
-      );
+    const heightIfFullWidth = w / aspectRatio;
+    if (heightIfFullWidth <= h) {
+      canvasWidth = w;
+      canvasHeight = Math.floor(w / aspectRatio);
     } else {
-      canvasWidth = window.innerWidth;
-      canvasHeight = Math.min(
-        window.innerHeight,
-        minHeight,
-        canvasWidth / aspectRatio,
-      );
+      canvasHeight = h;
+      canvasWidth = Math.floor(h * aspectRatio);
     }
   }
 

@@ -1,6 +1,10 @@
 import { setEngine } from "./app/getEngine";
+import {
+  fetchLeaderboard,
+  isLeaderboardAvailable,
+} from "./app/services/leaderboard";
 import { LoadScreen } from "./app/screens/LoadScreen";
-import { MainScreen } from "./app/screens/main/MainScreen";
+import { StartScreen } from "./app/screens/StartScreen";
 import { userSettings } from "./app/utils/userSettings";
 import { CreationEngine } from "./engine/engine";
 
@@ -14,11 +18,38 @@ import "@pixi/sound";
 const engine = new CreationEngine();
 setEngine(engine);
 
+async function renderLeaderboard() {
+  const listEl = document.getElementById("leaderboardList");
+  if (!listEl) return;
+  if (!isLeaderboardAvailable()) {
+    listEl.innerHTML =
+      '<p class="leaderboard-empty">Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env</p>';
+    return;
+  }
+  try {
+    const entries = await fetchLeaderboard(100);
+    if (entries.length === 0) {
+      listEl.innerHTML = '<p class="leaderboard-empty">No scores yet.</p>';
+      return;
+    }
+    listEl.innerHTML = entries
+      .map(
+        (e, i) =>
+          `<div class="leaderboard-entry">${i + 1}. ${e.player_name}: ${e.score}</div>`,
+      )
+      .join("");
+  } catch {
+    listEl.innerHTML =
+      '<p class="leaderboard-empty">Failed to load leaderboard.</p>';
+  }
+}
+
 (async () => {
   // Initialize the creation engine instance
   await engine.init({
-    background: "#1E1E1E",
-    resizeOptions: { minWidth: 768, minHeight: 1024, letterbox: false },
+    background: "#0a0a2e",
+    resizeOptions: { minWidth: 360, minHeight: 640, letterbox: true },
+    resizeTo: document.getElementById("pixi-container") ?? window,
   });
 
   // Initialize the user settings
@@ -26,6 +57,8 @@ setEngine(engine);
 
   // Show the load screen
   await engine.navigation.showScreen(LoadScreen);
-  // Show the main screen once the load screen is dismissed
-  await engine.navigation.showScreen(MainScreen);
+  // Show the start screen
+  await engine.navigation.showScreen(StartScreen);
+  // Fetch and display leaderboard
+  await renderLeaderboard();
 })();

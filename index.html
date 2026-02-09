@@ -3,14 +3,51 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="/style.css">
-    <title>PixiJS - Template</title>
+    <title>Jam Invader</title>
 </head>
 
 <body>
     <div id="app">
-        <div id="pixi-container"></div>
+        <div id="game-layout">
+            <aside id="product-panel" class="side-panel">
+                <h3 class="panel-title"><a href="https://www.heromea.com/vitrac/en/products-1" target="_blank" rel="noopener noreferrer">Our Products</a></h3>
+                <div class="product-grid">
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/raspberry-preserve-430g" target="_blank" class="product-link" title="Raspberry Preserve"><img src="/assets/game/products/Raspberry_1.png" alt="Raspberry" class="product-img" /></a>
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/mango-preserve-430g" target="_blank" class="product-link" title="Mango Preserve"><img src="/assets/game/products/Mango_1_0.png" alt="Mango" class="product-img" /></a>
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/carrot-preserve-430g" target="_blank" class="product-link" title="Carrot Preserve"><img src="/assets/game/products/Carrot_1.png" alt="Carrot" class="product-img" /></a>
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/blueberry-preserve-430g" target="_blank" class="product-link" title="Blueberry Preserve"><img src="/assets/game/products/Blueberry_1.png" alt="Blueberry" class="product-img" /></a>
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/black-cherry-preserve-430g" target="_blank" class="product-link" title="Black Cherry Preserve"><img src="/assets/game/products/bCherry_1.png" alt="Black Cherry" class="product-img" /></a>
+                    <a href="https://www.heromea.com/vitrac/en/products/spreads/strawberry-preserve-430g" target="_blank" class="product-link" title="Strawberry Preserve"><img src="/assets/game/products/Strw_1.png" alt="Strawberry" class="product-img" /></a>
+                </div>
+            </aside>
+            <main id="game-main">
+                <div id="pixi-container"></div>
+                <div id="start-overlay" class="overlay">
+                    <label for="playerNameInput">Your name:</label>
+                    <input type="text" id="playerNameInput" maxlength="50" placeholder="Enter your name" autocomplete="name" inputmode="text" />
+                    <button type="button" id="startPlayButton" class="overlay-play-btn">Play</button>
+                    <p class="controls-hint">Use ← → arrows to move, SPACE to shoot</p>
+                </div>
+                <div id="game-over-overlay" class="overlay hidden">
+                    <p id="finalScoreText"></p>
+                    <p id="finalHighScoreText"></p>
+                    <div id="couponMessage" class="coupon-message hidden">
+                        <h4>Congratulations!</h4>
+                        <p>Use code: <strong id="couponCode">VITRAC20</strong></p>
+                        <p class="coupon-discount">Get 20% OFF on Vitrac products!</p>
+                    </div>
+                    <p id="scoreSavedMessage" class="score-saved hidden">Score saved to leaderboard!</p>
+                </div>
+            </main>
+            <aside id="leaderboard-panel" class="side-panel">
+                <h3 class="panel-title">Leaderboard</h3>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <p class="leaderboard-loading">Loading...</p>
+                </div>
+            </aside>
+        </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
 </body>
