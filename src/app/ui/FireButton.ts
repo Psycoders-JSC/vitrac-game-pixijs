@@ -74,3 +74,12 @@ export class FireButton extends FancyButton {
 export function isTouchDevice(): boolean {
   return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
+
+/** Mobile viewport breakpoint - show control buttons only below this width */
+const MOBILE_BREAKPOINT = 768;
+
+/** True when in mobile mode (small viewport) - control buttons shown only then */
+export function isMobileMode(width?: number): boolean {
+  const w = width ?? window.innerWidth;
+  return w < MOBILE_BREAKPOINT;
+}

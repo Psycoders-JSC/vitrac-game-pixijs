@@ -21,7 +21,13 @@ import {
   getSeedScale,
   SPRITE_CONFIG,
 } from "../game/spriteScale";
-import { FireButton, isTouchDevice } from "../ui/FireButton";
+import { FireButton, isMobileMode, isTouchDevice } from "../ui/FireButton";
+import {
+  MOVE_BUTTON_GAP,
+  MOVE_BUTTON_MARGIN,
+  MOVE_BUTTON_SIZE,
+  MoveButtons,
+} from "../ui/MoveButtons";
 import { GameOverScreen } from "./GameOverScreen";
 
 /** Main gameplay screen */
@@ -42,6 +48,7 @@ export class GameScreen extends Container {
   private levelText!: Text;
   private levelCompleteOverlay!: Text;
   private fireButton?: FireButton;
+  private moveButtons?: MoveButtons;
   private screenShake = 0;
   private gameStartFrames = 0;
   private shootCooldown = 150;
@@ -98,6 +105,18 @@ export class GameScreen extends Container {
     this.player = new Player(w, h);
     this.gameContainer.addChild(this.player);
 
+    if (isTouchDevice() && isMobileMode(w)) {
+      this.moveButtons = new MoveButtons();
+      this.moveButtons.x = MOVE_BUTTON_MARGIN;
+      this.moveButtons.y = h - MOVE_BUTTON_MARGIN - MOVE_BUTTON_SIZE;
+      this.addChild(this.moveButtons);
+
+      const playerY = h - MOVE_BUTTON_MARGIN - MOVE_BUTTON_SIZE;
+      this.player.updateSize(w, h, playerY);
+      this.player.x =
+        MOVE_BUTTON_MARGIN + MOVE_BUTTON_SIZE + MOVE_BUTTON_GAP / 2;
+    }
+
     this.initEnemies();
 
     const fontSize = Math.max(14, Math.min(24, w * 0.055));
@@ -135,7 +154,7 @@ export class GameScreen extends Container {
     this.levelCompleteOverlay.visible = false;
     this.addChild(this.levelCompleteOverlay);
 
-    if (isTouchDevice()) {
+    if (isTouchDevice() && isMobileMode(w)) {
       this.fireButton = new FireButton();
       this.fireButton.x = w - 24 - 36;
       this.fireButton.y = h - 24 - 36;
@@ -588,8 +607,15 @@ export class GameScreen extends Container {
       this.background.width = w;
       this.background.height = h;
     }
+    const showControls = isTouchDevice() && isMobileMode(w);
     if (this.player) {
-      this.player.updateSize(w, h);
+      const hasMoveButtons = !!this.moveButtons;
+      if (hasMoveButtons && showControls) {
+        this.player.updateSize(w, h, h - MOVE_BUTTON_MARGIN - MOVE_BUTTON_SIZE);
+      } else {
+        this.player.updateSize(w, h);
+        if (hasMoveButtons) this.player.x = w / 2;
+      }
     }
     if (this.levelCompleteOverlay) {
       this.levelCompleteOverlay.position.set(w / 2, h / 2);
@@ -608,8 +634,18 @@ export class GameScreen extends Container {
       this.levelText.position.set(8, 8 + (fontSize + 4) * 2);
     }
     if (this.fireButton) {
-      this.fireButton.x = w - 24 - 36;
-      this.fireButton.y = h - 24 - 36;
+      this.fireButton.visible = showControls;
+      if (showControls) {
+        this.fireButton.x = w - 24 - 36;
+        this.fireButton.y = h - 24 - 36;
+      }
+    }
+    if (this.moveButtons) {
+      this.moveButtons.visible = showControls;
+      if (showControls) {
+        this.moveButtons.x = MOVE_BUTTON_MARGIN;
+        this.moveButtons.y = h - MOVE_BUTTON_MARGIN - MOVE_BUTTON_SIZE;
+      }
     }
   }
 
@@ -659,14 +695,44 @@ export class GameScreen extends Container {
         this.touchFire = false;
       });
     }
+    if (this.moveButtons) {
+      this.moveButtons.leftButton.onDown.connect(() => {
+        this.touchLeft = true;
+      });
+      this.moveButtons.leftButton.onUp.connect(() => {
+        this.touchLeft = false;
+      });
+      this.moveButtons.leftButton.onUpOut.connect(() => {
+        this.touchLeft = false;
+      });
+      this.moveButtons.rightButton.onDown.connect(() => {
+        this.touchRight = true;
+      });
+      this.moveButtons.rightButton.onUp.connect(() => {
+        this.touchRight = false;
+      });
+      this.moveButtons.rightButton.onUpOut.connect(() => {
+        this.touchRight = false;
+      });
+    }
   }
 
   public async hide(): Promise<void> {
     this.touchFire = false;
+    this.touchLeft = false;
+    this.touchRight = false;
     if (this.fireButton) {
       this.fireButton.onDown.disconnectAll();
       this.fireButton.onUp.disconnectAll();
       this.fireButton.onUpOut.disconnectAll();
+    }
+    if (this.moveButtons) {
+      this.moveButtons.leftButton.onDown.disconnectAll();
+      this.moveButtons.leftButton.onUp.disconnectAll();
+      this.moveButtons.leftButton.onUpOut.disconnectAll();
+      this.moveButtons.rightButton.onDown.disconnectAll();
+      this.moveButtons.rightButton.onUp.disconnectAll();
+      this.moveButtons.rightButton.onUpOut.disconnectAll();
     }
     this.removeInput();
   }
@@ -720,8 +786,36 @@ export class GameScreen extends Container {
           );
         })();
 
+      const inLeftMove =
+        this.moveButtons &&
+        (() => {
+          const b = this.moveButtons!.getLeftTouchBounds(h);
+          return (
+            canvasX >= b.left &&
+            canvasX <= b.right &&
+            canvasY >= b.top &&
+            canvasY <= b.bottom
+          );
+        })();
+
+      const inRightMove =
+        this.moveButtons &&
+        (() => {
+          const b = this.moveButtons!.getRightTouchBounds(h);
+          return (
+            canvasX >= b.left &&
+            canvasX <= b.right &&
+            canvasY >= b.top &&
+            canvasY <= b.bottom
+          );
+        })();
+
       if (inFireButton) {
         this.touchFire = true;
+      } else if (inLeftMove) {
+        this.touchLeft = true;
+      } else if (inRightMove) {
+        this.touchRight = true;
       } else if (canvasY < h * 0.4) {
         const now = Date.now();
         if (now - this.lastShootTime > this.shootCooldown) {
@@ -764,10 +858,42 @@ export class GameScreen extends Container {
           );
         })();
 
+      const inLeftMove =
+        this.moveButtons &&
+        (() => {
+          const b = this.moveButtons!.getLeftTouchBounds(h);
+          return (
+            canvasX >= b.left &&
+            canvasX <= b.right &&
+            canvasY >= b.top &&
+            canvasY <= b.bottom
+          );
+        })();
+
+      const inRightMove =
+        this.moveButtons &&
+        (() => {
+          const b = this.moveButtons!.getRightTouchBounds(h);
+          return (
+            canvasX >= b.left &&
+            canvasX <= b.right &&
+            canvasY >= b.top &&
+            canvasY <= b.bottom
+          );
+        })();
+
       if (!inFireButton) {
-        const centerX = w / 2;
-        this.touchLeft = canvasX < centerX;
-        this.touchRight = canvasX >= centerX;
+        if (inLeftMove) {
+          this.touchLeft = true;
+          this.touchRight = false;
+        } else if (inRightMove) {
+          this.touchLeft = false;
+          this.touchRight = true;
+        } else {
+          const centerX = w / 2;
+          this.touchLeft = canvasX < centerX;
+          this.touchRight = canvasX >= centerX;
+        }
       }
     };
     this.boundTouchEnd = (e: TouchEvent) => {

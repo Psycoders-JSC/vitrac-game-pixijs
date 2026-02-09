@@ -30,14 +30,18 @@ export class Player extends Sprite {
     return this._speed;
   }
 
-  public updateSize(screenWidth: number, screenHeight: number): void {
+  /** Update size and position. Pass playerY to override bottom Y (e.g. when using move buttons). */
+  public updateSize(
+    screenWidth: number,
+    screenHeight: number,
+    playerY?: number,
+  ): void {
     this._scaleFactor = getPlayerScale(screenWidth);
     this.scale.set(this._scaleFactor);
     this._speed = this.baseSpeed * this._scaleFactor;
-    const margin = 12 * (screenWidth / 360);
     this.x = Math.min(this.x, screenWidth - this.width / 2);
     this.x = Math.max(this.x, this.width / 2);
-    this.y = screenHeight - margin;
+    this.y = playerY ?? screenHeight - 12 * (screenWidth / 360);
   }
 
   public moveLeft(_screenWidth: number, speedMultiplier = 1): void {
