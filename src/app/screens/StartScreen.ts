@@ -5,6 +5,7 @@ import { storage } from "../../engine/utils/storage";
 import { GameScreen } from "./GameScreen";
 
 const PLAYER_NAME_KEY = "jamInvaderPlayerName";
+const PLAYER_PHONE_KEY = "jamInvaderPlayerPhone";
 
 /** Start screen: player name input, Asmaa background, Jam Invader title */
 export class StartScreen extends Container {
@@ -36,23 +37,37 @@ export class StartScreen extends Container {
   }
 
   private handlePlay() {
-    const input = document.getElementById(
+    const nameInput = document.getElementById(
       "playerNameInput",
     ) as HTMLInputElement;
-    const name = (input?.value?.trim() ?? "") || "Player";
+    const name = (nameInput?.value?.trim() ?? "") || "Player";
     storage.setString(PLAYER_NAME_KEY, name);
+
+    const phoneInput = document.getElementById(
+      "playerPhoneInput",
+    ) as HTMLInputElement;
+    const phone = phoneInput?.value?.trim() ?? "";
+    storage.setString(PLAYER_PHONE_KEY, phone);
+
     document.getElementById("start-overlay")?.classList.add("hidden");
     document.body.classList.remove("start-overlay-visible");
     engine().navigation.showScreen(GameScreen);
   }
 
   public prepare() {
-    const input = document.getElementById(
+    const nameInput = document.getElementById(
       "playerNameInput",
     ) as HTMLInputElement;
-    if (input) {
-      input.value = storage.getString(PLAYER_NAME_KEY) ?? "";
-      input.placeholder = "Enter your name";
+    if (nameInput) {
+      nameInput.value = storage.getString(PLAYER_NAME_KEY) ?? "";
+      nameInput.placeholder = "Enter your name";
+    }
+    const phoneInput = document.getElementById(
+      "playerPhoneInput",
+    ) as HTMLInputElement;
+    if (phoneInput) {
+      phoneInput.value = storage.getString(PLAYER_PHONE_KEY) ?? "";
+      phoneInput.placeholder = "Enter your phone";
     }
     document.getElementById("start-overlay")?.classList.remove("hidden");
     document.body.classList.add("start-overlay-visible");
