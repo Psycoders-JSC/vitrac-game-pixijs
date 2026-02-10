@@ -14,7 +14,7 @@ const POWER_UP_SPRITES: Record<PowerUpType, string> = {
   extraLives: "game/products/Blueberry_1.png",
 };
 
-/** Droppable power-up - Vitrac jam product sprite, drifts down for collection */
+/** Droppable power-up - Lion jam product sprite, drifts down for collection */
 export class PowerUp extends Sprite {
   public readonly type: PowerUpType;
   private readonly dropSpeed: number;

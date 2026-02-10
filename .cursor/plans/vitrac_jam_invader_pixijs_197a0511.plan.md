@@ -1,9 +1,9 @@
 ---
-name: Vitrac Chips invaders PixiJS
-overview: "Recreate Chips invaders (Strawberry Invader) as a PixiJS space shooter: copy assets from vitrac-game-example, implement core mechanics, integrate Supabase leaderboard, and upgrade visuals/game feel while preserving the neon/space theme."
+name: Lion Chips invaders PixiJS
+overview: "Recreate Chips invaders (Strawberry Invader) as a PixiJS space shooter: copy assets from Lion-game-example, implement core mechanics, integrate Supabase leaderboard, and upgrade visuals/game feel while preserving the neon/space theme."
 todos:
   - id: copy-assets
-    content: Copy assets from vitrac-game-example to raw-assets/game{m}/ and configure AssetPack bundle
+    content: Copy assets from Lion-game-example to raw-assets/game{m}/ and configure AssetPack bundle
     status: completed
   - id: supabase-setup
     content: Add @supabase/supabase-js, config.example.ts, supabase client, and leaderboard service
@@ -29,11 +29,11 @@ todos:
 isProject: false
 ---
 
-# Vitrac Chips invaders - PixiJS Recreation Plan
+# Lion Chips invaders - PixiJS Recreation Plan
 
 ## Summary
 
-Port the HTML5 Canvas Chips invaders game from [D:\vitrac-game-example](D:\vitrac-game-example) to the PixiJS project, copying all sprites and assets, connecting to Supabase for the leaderboard, and upgrading visuals/game feel while keeping the neon/space vibe.
+Port the HTML5 Canvas Chips invaders game from [D:\Lion-game-example](D:\Lion-game-example) to the PixiJS project, copying all sprites and assets, connecting to Supabase for the leaderboard, and upgrading visuals/game feel while keeping the neon/space vibe.
 
 ---
 
@@ -41,7 +41,7 @@ Port the HTML5 Canvas Chips invaders game from [D:\vitrac-game-example](D:\vitra
 
 ### Copy assets from old project
 
-Copy from `D:\vitrac-game-example\assets\` to `raw-assets/game{m}/`:
+Copy from `D:\Lion-game-example\assets\` to `raw-assets/game{m}/`:
 
 
 | Asset                                                                                    | Purpose              |
@@ -50,7 +50,7 @@ Copy from `D:\vitrac-game-example\assets\` to `raw-assets/game{m}/`:
 | spaceship.png                                                                            | Player ship          |
 | bullet.png                                                                               | Player bullets       |
 | background.png                                                                           | Game background      |
-| logo-vitrac.png                                                                          | Header/logo          |
+| logo-Lion.png                                                                          | Header/logo          |
 | Asmaa.png                                                                                | Start screen avatar  |
 | Raspberry_1.png, Mango_1_0.png, Carrot_1.png, Blueberry_1.png, bCherry_1.png, Strw_1.png | Product panel images |
 
@@ -66,13 +66,13 @@ Copy from `D:\vitrac-game-example\assets\` to `raw-assets/game{m}/`:
 ### 2.1 Install and configure Supabase
 
 - Add `@supabase/supabase-js` dependency
-- Create `config.example.ts` with `supabaseUrl` and `supabaseKey` (mirror [config.example.js](D:\vitrac-game-example/config.example.js))
+- Create `config.example.ts` with `supabaseUrl` and `supabaseKey` (mirror [config.example.js](D:\Lion-game-example/config.example.js))
 - Add `config.ts` to `.gitignore`; use env vars or a config loader that reads from `import.meta.env`
-- Create [src/engine/supabase/supabase.ts](d:\vitrac-game pixi js\src\engine\supabase\supabase.ts) — Supabase client singleton
+- Create [src/engine/supabase/supabase.ts](d:\Lion-game pixi js\src\engine\supabase\supabase.ts) — Supabase client singleton
 
 ### 2.2 Database schema
 
-Use existing [database.sql](D:\vitrac-game-example\database.sql) in Supabase:
+Use existing [database.sql](D:\Lion-game-example\database.sql) in Supabase:
 
 - Table `high_scores` (id, player_name, score, created_at, updated_at)
 - RLS policies: public SELECT, public INSERT
@@ -132,7 +132,7 @@ flowchart LR
 | **Particle** | `Particle.ts` | Explosion effect, pooled                                                  |
 
 
-### 4.2 Game logic (from [game.js](D:\vitrac-game-example\game.js))
+### 4.2 Game logic (from [game.js](D:\Lion-game-example\game.js))
 
 - **Levels 1–10**: Same fruit per level; grid 2–6 rows × 4–10 cols
 - **Difficulty**: enemy speed `0.5 + (level-1)*0.15`, shoot interval 180→60 frames, seed speed `3 + (level-1)*0.3`
@@ -168,7 +168,7 @@ flowchart LR
 
 - **Product panel**: Side panel with product images (6 items) and links to heromea.com — can stay as HTML overlay or be rebuilt with @pixi/ui
 - **Leaderboard**: Fetch on load; display top 100; refresh after game over
-- **Coupon**: New high score → VITRAC20/25/30/35 based on score tier
+- **Coupon**: New high score → Lion20/25/30/35 based on score tier
 
 ---
 
@@ -182,7 +182,7 @@ flowchart LR
 
 ### 6.2 HTML shell
 
-Update [index.html](d:\vitrac-game pixi js\index.html):
+Update [index.html](d:\Lion-game pixi js\index.html):
 
 - Add product panel and leaderboard sections (can be DOM overlays or PixiJS)
 - Link styles for neon theme (or apply via PixiJS)
@@ -217,7 +217,7 @@ raw-assets/
 └── game{m}/
     ├── strawberry.png, blueberry.png, mango.png
     ├── spaceship.png, bullet.png, background.png
-    ├── logo-vitrac.png, Asmaa.png
+    ├── logo-Lion.png, Asmaa.png
     └── products/
         └── Raspberry_1.png, Mango_1_0.png, ...
 ```

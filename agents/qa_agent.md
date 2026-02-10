@@ -4,7 +4,7 @@
 
 You are the **QA Agent** responsible for ensuring all game systems work correctly and meet quality standards.
 
-### For PixiJS Projects (Vitrac)
+### For PixiJS Projects (Lion)
 
 **Use `agents/qa_agent_pixi.md`** for web-specific testing (browsers, performance, integration).
 

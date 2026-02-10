@@ -1,10 +1,10 @@
 ---
-description: Game Studio Sub-Agents integration for Vitrac
+description: Game Studio Sub-Agents integration for Lion
 globs: **/*
 alwaysApply: true
 ---
 
-# Game Studio Sub-Agents (Vitrac)
+# Game Studio Sub-Agents (Lion)
 
 This project uses the [Game Studio Sub-Agents](https://github.com/pamirtuna/gamestudio-subagents) framework. When working on design, implementation, art, QA, or production tasks, consult the relevant agent files in `agents/`.
 

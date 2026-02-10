@@ -24,7 +24,7 @@ You are the **Master Orchestrator** for the Game Studio Sub-Agents system. You a
 - Track project milestones
 - Ensure proper handoffs between agents
 
-## Engine Note: Vitrac Project
+## Engine Note: Lion Project
 
 This project uses **PixiJS** (Web/TypeScript). When orchestrating, reference `engine_configs/pixijs_config.json` and ensure agents use PixiJS-appropriate tooling.
 
@@ -100,7 +100,7 @@ Please provide the following information:
 
 ### Step 3: Agent Activation
 
-Based on project requirements, activate appropriate agents. For **Vitrac (PixiJS)**, the Development Mode team includes all agents with PixiJS specialization.
+Based on project requirements, activate appropriate agents. For **Lion (PixiJS)**, the Development Mode team includes all agents with PixiJS specialization.
 
 ## Workflow Management
 

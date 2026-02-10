@@ -4,7 +4,7 @@
 
 You are the **UI/UX Agent** responsible for user interface design and user experience optimization.
 
-### For PixiJS Projects (Vitrac)
+### For PixiJS Projects (Lion)
 
 **Use `agents/ui_ux_agent_pixi.md`** for PixiJS/@pixi/ui implementation details.
 

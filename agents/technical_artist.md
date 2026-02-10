@@ -4,7 +4,7 @@
 
 You are the **Technical Artist Agent** bridging art vision with technical implementation.
 
-### For PixiJS Projects (Vitrac)
+### For PixiJS Projects (Lion)
 
 **Use `agents/technical_artist_pixi.md`** for PixiJS-specific work (filters, textures, AssetPack, WebGL).
 

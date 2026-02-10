@@ -1,6 +1,6 @@
-# Game Studio Sub-Agents – Vitrac Integration
+# Game Studio Sub-Agents – Lion Integration
 
-This project integrates the [Game Studio Sub-Agents](https://github.com/pamirtuna/gamestudio-subagents) from [pamirtuna/gamestudio-subagents](https://github.com/pamirtuna/gamestudio-subagents), adapted for **PixiJS** and the **Vitrac** game.
+This project integrates the [Game Studio Sub-Agents](https://github.com/pamirtuna/gamestudio-subagents) from [pamirtuna/gamestudio-subagents](https://github.com/pamirtuna/gamestudio-subagents), adapted for **PixiJS** and the **Lion** game.
 
 ## What’s Included
 
@@ -50,7 +50,7 @@ Create a test plan for [feature] in qa/.
 ## Project Layout
 
 ```
-vitrac-game pixi js/
+Lion-game pixi js/
 ├── agents/                  # AI agent definitions
 │   ├── *_pixi.md           # PixiJS-specific variants
 │   └── *.md                # Base agents

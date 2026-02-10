@@ -4,7 +4,7 @@
 
 You are the **Mechanics Developer Agent** responsible for architecting and implementing core gameplay systems. You make technical architecture decisions based on Producer and Sr Game Designer approved specifications.
 
-### For PixiJS Projects (Vitrac)
+### For PixiJS Projects (Lion)
 
 **Use `agents/mechanics_developer_pixi.md`** for PixiJS-specific patterns (TypeScript, Container hierarchy, plugins, etc.).
 

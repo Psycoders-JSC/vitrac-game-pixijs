@@ -1,18 +1,18 @@
 ---
-name: Vitrac Game Specs
-overview: Extracted game specifications from the vitrac-game-example codebase, covering genre, mechanics, UI, assets, backend, and technical implementation.
+name: Lion Game Specs
+overview: Extracted game specifications from the Lion-game-example codebase, covering genre, mechanics, UI, assets, backend, and technical implementation.
 todos: []
 isProject: false
 ---
 
-# Vitrac Game Specifications (Extracted)
+# Lion Game Specifications (Extracted)
 
 ## Game Identity
 
 - **Project names**: "Strawberry Invader" (README), "Chips invaders" (UI)
 - **Genre**: Space shooter (Chicken Invader–style)
 - **Tech stack**: HTML5 Canvas, vanilla JavaScript, CSS3
-- **Brand**: Vitrac (heromea.com) – jam/preserve products
+- **Brand**: Lion (heromea.com) – jam/preserve products
 
 ---
 
@@ -69,7 +69,7 @@ isProject: false
 
 - **Points**: 10 × level per enemy destroyed
 - **High score**: Local storage, persisted
-- **Coupon**: New high score → Vitrac coupon (VITRAC20, VITRAC25, VITRAC30, VITRAC35 by score tier)
+- **Coupon**: New high score → Lion coupon (Lion20, Lion25, Lion30, Lion35 by score tier)
 - **Leaderboard**: Top 100, Supabase-backed; auto-save on game over
 
 ---
@@ -78,7 +78,7 @@ isProject: false
 
 - Dark background (#0a0a2e–#16213e)
 - Cyan accent (#00ffff)
-- Product links to heromea.com Vitrac product pages
+- Product links to heromea.com Lion product pages
 
 ---
 
@@ -91,7 +91,7 @@ isProject: false
 | `spaceship.png`                                          | Player ship          |
 | `bullet.png`                                             | Player bullets       |
 | `background.png`                                         | Game background      |
-| `logo-vitrac.png`                                        | Header logo          |
+| `logo-Lion.png`                                        | Header logo          |
 | `Asmaa.png`                                              | Start screen avatar  |
 | `Raspberry_1.png`, `Mango_1_0.png`, `Carrot_1.png`, etc. | Product panel images |
 

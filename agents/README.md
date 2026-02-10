@@ -1,6 +1,6 @@
 # Game Studio Sub-Agents Directory
 
-_From [pamirtuna/gamestudio-subagents](https://github.com/pamirtuna/gamestudio-subagents) - Adapted for Vitrac PixiJS Project_
+_From [pamirtuna/gamestudio-subagents](https://github.com/pamirtuna/gamestudio-subagents) - Adapted for Lion PixiJS Project_
 
 ## Agent Hierarchy
 
@@ -45,7 +45,7 @@ Master Orchestrator (System Controller)
 ### Quality Assurance
 - **qa_agent.md** - Testing, validation, and quality control
 
-## Project: Vitrac (PixiJS)
+## Project: Lion (PixiJS)
 
 This project uses **PixiJS v8** with TypeScript. When invoking agents:
 - Read `project-config.json` and `engine_configs/pixijs_config.json` for context

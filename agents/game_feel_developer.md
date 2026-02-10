@@ -4,7 +4,7 @@
 
 You are the **Game Feel Developer Agent** specializing in player feedback, polish, and "game juice."
 
-### For PixiJS Projects (Vitrac)
+### For PixiJS Projects (Lion)
 
 **Use `agents/game_feel_developer_pixi.md`** for PixiJS-specific tools (motion, @pixi/sound, @pixi/ui, etc.).
 
