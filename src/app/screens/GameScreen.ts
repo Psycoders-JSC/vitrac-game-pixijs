@@ -202,7 +202,8 @@ export class GameScreen extends Container {
     const spacingY = enemyHeight + 6 * (w / 360);
 
     const baseSpeed = 0.5 + (level - 1) * 0.25;
-    const speed = baseSpeed * (targetDisplaySize / SPRITE_CONFIG.enemy.maxTextureWidth);
+    const speed =
+      baseSpeed * (targetDisplaySize / SPRITE_CONFIG.enemy.maxTextureWidth);
     const shootInterval = Math.max(60, 180 - (level - 1) * 10);
 
     for (let row = 0; row < rows; row++) {
