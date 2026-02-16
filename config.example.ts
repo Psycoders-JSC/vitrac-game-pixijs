@@ -7,6 +7,6 @@
  * Do not commit config.ts with real keys - add config.ts to .gitignore
  */
 export const SUPABASE_CONFIG = {
-  supabaseUrl: "https://YOUR_PROJECT_ID.supabase.co",
-  supabaseKey: "YOUR_ANON_PUBLIC_KEY",
+  supabaseUrl: "https://awfhpelyoajpzijtpbar.supabase.co",
+  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3ZmhwZWx5b2FqcHppanRwYmFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0MTk1NjgsImV4cCI6MjA4NTk5NTU2OH0.91w6fDbHcMxYlB_5gZSnWlTAL2XyVQxCGLcdMt8gwEQ",
 };
